@@ -6,12 +6,17 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import admissionRoutes from "./routes/admissionRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
+const allowedOrigins = new Set([
+  process.env.CLIENT_URL || "http://localhost:5173",
+  "https://iics-college-frontend.onrender.com",
+]);
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: [...allowedOrigins],
   })
 );
 
@@ -33,6 +38,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/admissions", admissionRoutes);
+app.use("/api/contact", contactRoutes);
 
 const PORT = process.env.PORT || 5000;
 

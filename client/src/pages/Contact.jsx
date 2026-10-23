@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { MapPin, Phone, Mail, Send, CheckCircle2 } from "lucide-react";
 import SectionHeading from "../components/common/SectionHeading";
+import { apiRequest } from "../lib/api";
 
 const initialForm = {
   name: "",
@@ -13,6 +14,8 @@ const initialForm = {
 export default function Contact() {
   const [form, setForm] = useState(initialForm);
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -23,9 +26,26 @@ export default function Contact() {
     }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    setSent(true);
+    setSending(true);
+    setError("");
+
+    try {
+      await apiRequest(
+        "/contact",
+        {
+          method: "POST",
+          body: JSON.stringify(form),
+        },
+        { expectedStatus: 201 }
+      );
+      setSent(true);
+    } catch (requestError) {
+      setError(requestError.message || "Unable to send your message. Please try again.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -113,12 +133,11 @@ export default function Contact() {
               <CheckCircle2 className="mx-auto text-green-600" size={44} />
 
               <h2 className="mt-5 text-2xl font-bold text-slate-900">
-                Message form validated
+                Message sent successfully
               </h2>
 
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                This demonstration has not sent or stored your message.
-                We'll connect it to the backend next.
+                Thank you for contacting IICS College. We’ll be in touch soon.
               </p>
 
               <button
@@ -126,6 +145,7 @@ export default function Contact() {
                 onClick={() => {
                   setForm(initialForm);
                   setSent(false);
+                  setError("");
                 }}
                 className="mt-6 rounded-lg bg-blue-800 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-900"
               >
@@ -143,6 +163,15 @@ export default function Contact() {
               </p>
 
               <form onSubmit={handleSubmit} className="mt-7 space-y-5">
+                {error && (
+                  <p
+                    className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+                    role="alert"
+                  >
+                    {error}
+                  </p>
+                )}
+
                 <div>
                   <label
                     htmlFor="contact-name"
@@ -228,9 +257,10 @@ export default function Contact() {
 
                 <button
                   type="submit"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-800 px-5 py-3 font-semibold text-white hover:bg-blue-900"
+                  disabled={sending}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-800 px-5 py-3 font-semibold text-white hover:bg-blue-900 disabled:cursor-wait disabled:opacity-60"
                 >
-                  Submit message
+                  {sending ? "Sending..." : "Submit message"}
                   <Send size={17} />
                 </button>
               </form>

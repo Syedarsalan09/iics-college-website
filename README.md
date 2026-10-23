@@ -31,8 +31,11 @@ and `/api/notices`; admission inquiries and contact messages are submitted to
 
 The admin web interface is available at `/admin/login`. Sign in with the
 configured administrator account to review admission inquiries at
-`/admin/admissions`. The dashboard uses the existing JWT-protected API routes
-to list inquiries and update their statuses.
+`/admin/admissions` and submitted contact messages at `/admin/contact-messages`.
+The dashboard uses JWT-protected API routes to list inquiries and contact
+messages and update admission statuses. Set the backend `CLIENT_URL` environment
+variable to the deployed frontend origin; the IICS Render frontend origin is
+also allowed by the API.
 
 ## Frontend
 
@@ -46,9 +49,18 @@ npm run dev
 
 Vite proxies `/api` requests to `http://localhost:5000`. To use a separately
 hosted API, copy `client/.env.example` to `client/.env` and set `VITE_API_URL`
-to the API base URL ending in `/api`.
+to the API base URL ending in `/api`. In the Render Static Site environment,
+set `VITE_API_URL=https://iics-college-website.onrender.com/api` and trigger a
+redeploy so the value is included in the frontend build. API calls append paths
+such as `/contact` to this base URL; do not include `/api` in those paths.
 
 Run `npm run lint` and `npm run build` from `client` to check the frontend.
+
+To test contact submissions locally, start MongoDB and the backend with
+`server/.env` configured, then run the frontend using the Vite proxy. Submit the
+Contact form and verify it appears at `/admin/contact-messages` after signing in.
+In Render, deploy the backend changes and frontend build before repeating that
+test on the deployed site.
 
 ## Publishing college content
 

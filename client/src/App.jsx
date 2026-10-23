@@ -17,6 +17,7 @@ import AdminRoute from "./components/admin/AdminRoute";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminLogin from "./pages/AdminLogin";
 import AdminAdmissions from "./pages/AdminAdmissions";
+import AdminContactMessages from "./pages/AdminContactMessages";
 
 export default function App() {
   return (
@@ -36,6 +37,10 @@ export default function App() {
       <Route element={<AdminRoute />}>
         <Route element={<AdminLayout />}>
           <Route path="/admin/admissions" element={<AdminAdmissions />} />
+          <Route
+            path="/admin/contact-messages"
+            element={<AdminContactMessages />}
+          />
         </Route>
       </Route>
       <Route element={<MainLayout />}>

@@ -1,5 +1,5 @@
 import { GraduationCap, LogOut } from "lucide-react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { clearAdminToken } from "../../lib/adminAuth";
 
 export default function AdminLayout() {
@@ -27,14 +27,42 @@ export default function AdminLayout() {
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={signOut}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
-          >
-            <LogOut size={16} />
-            Sign out
-          </button>
+          <div className="flex items-center gap-3">
+            <nav className="flex items-center gap-2" aria-label="Admin pages">
+              <NavLink
+                to="/admin/admissions"
+                className={({ isActive }) =>
+                  `rounded-lg px-3 py-2 text-sm font-semibold ${
+                    isActive
+                      ? "bg-blue-50 text-blue-800"
+                      : "text-slate-600 hover:bg-slate-50"
+                  }`
+                }
+              >
+                Admissions
+              </NavLink>
+              <NavLink
+                to="/admin/contact-messages"
+                className={({ isActive }) =>
+                  `rounded-lg px-3 py-2 text-sm font-semibold ${
+                    isActive
+                      ? "bg-blue-50 text-blue-800"
+                      : "text-slate-600 hover:bg-slate-50"
+                  }`
+                }
+              >
+                Contact messages
+              </NavLink>
+            </nav>
+            <button
+              type="button"
+              onClick={signOut}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
+            >
+              <LogOut size={16} />
+              Sign out
+            </button>
+          </div>
         </div>
       </header>
       <main>
